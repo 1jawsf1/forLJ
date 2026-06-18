@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Lianne</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #ee5a6f 50%, #c44569 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px 30px;
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .heart {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: heartBeat 1.5s infinite;
+            mix-blend-mode: multiply;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+        }
+
+        .message {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .highlight {
+            color: #c44569;
+            font-weight: 600;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-direction: column;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .yes-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .yes-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .yes-btn:active { transform: scale(0.98); }
+
+        .no-btn {
+            background: #f0f0f0;
+            color: #333;
+            flex: 1;
+        }
+
+        .no-btn:hover { background: #e0e0e0; }
+        .no-btn:active { transform: scale(0.98); }
+
+        .moving-no-btn { position: relative; }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            animation: confettiFall linear forwards;
+            border-radius: 2px;
+        }
+
+        @keyframes confettiFall {
+            to { transform: translateY(100vh) rotateZ(720deg); opacity: 0; }
+        }
+
+        .page {
+            display: none;
+            animation: successPop 0.5s ease-out;
+        }
+
+        @keyframes successPop {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .page.show { display: block; }
+
+        .emoji-rain {
+            margin: 20px 0;
+            animation: emojiRain 1s ease-in;
+        }
+
+        @keyframes emojiRain {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .cards-wrapper {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .cards-label {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .date-card {
+            border: 2px solid #eee;
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.25s;
+            background: #fff;
+        }
+
+        .date-card:hover {
+            border-color: #ee5a6f;
+            box-shadow: 0 4px 16px rgba(238, 90, 111, 0.15);
+        }
+
+        .date-card.selected {
+            border-color: #ee5a6f;
+            background: #fff5f6;
+        }
+
+        .date-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #fafafa;
+        }
+
+        .date-card.disabled:hover {
+            border-color: #eee;
+            box-shadow: none;
+        }
+
+        .date-label {
+            font-weight: 700;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .date-note {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .tag-perfect { background: #fff0f2; color: #ee5a6f; }
+        .tag-far { background: #f5f5f5; color: #bbb; }
+        .tag-okay { background: #fff8e1; color: #f0a500; }
+        .tag-rush { background: #fdecea; color: #e57373; }
+
+        .step-indicator {
+            font-size: 12px;
+            color: #ccc;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Animated name */
+        .name-animate {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0px;
+            margin-bottom: 16px;
+        }
+
+        .name-animate span {
+            display: inline-block;
+            font-size: 28px;
+            font-weight: 700;
+            color: #c44569;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: letterPop 0.4s ease forwards;
+        }
+
+        .name-animate .space {
+            width: 10px;
+        }
+
+        @keyframes letterPop {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Summary card overlay */
+        .summary-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .summary-overlay.show {
+            display: flex;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 24px;
+            padding: 36px 28px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            animation: successPop 0.4s ease-out;
+            margin: auto;
+        }
+
+        .summary-card h2 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .summary-card .sub {
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #fff5f6;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .summary-row .icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .summary-row .info-label {
+            font-size: 11px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-row .info-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333;
+            margin-top: 2px;
+        }
+
+        .summary-note {
+            font-size: 12px;
+            color: #bbb;
+            margin: 16px 0 20px;
+            line-height: 1.6;
+        }
+
+        .summary-card .yes-btn {
+            width: 100%;
+            font-size: 14px;
+            padding: 12px 20px;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 30px 20px; }
+            .message { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- PAGE 1: question -->
+        <div id="page-1" class="page show">
+            <div class="heart">
+                <img src="dawg.jpg" alt="dog" width="100" height="100">
+            </div>
+
+            <div class="name-animate" id="nameAnimate"></div>
+
+            <h3 style="color:#555; font-size:15px; font-weight:400; margin-bottom:12px;">
+                My glorious idol in the whole wide world from heaven and earth. My GOAT, my
+                <span style="color:#000000; opacity:0.1;">goat crush</span>.
+                Oh wait, it's suppose to be a greeting lang eh.
+            </h3>
+            <br>
+            <p class="message">
+                Anyway, I've been thinking about you a lot. I know we've been talking for quite a while now and I'd really love to spend more time with you.
+                <span class="highlight">May I take you out on a BIRTHDAY date?</span>
+            </p>
+            <div class="buttons">
+                <button class="yes-btn" onclick="handleYes()">hell yeah!</button>
+                <button class="no-btn moving-no-btn" id="noBtn" onclick="moveNoButton(event)">nah</button>
+            </div>
+        </div>
+
+        <!-- PAGE 2: date picker -->
+        <div id="page-2" class="page">
+            <div class="emoji-rain">
+                <img src="dawg1.jpg" alt="dog" width="90" height="90">
+                <p style="font-size: 10px;">(lemme borrow ur dogmoji for now)</p>
+            </div>
+            <p class="message">
+                <span class="highlight">A few more questions left, please stay!</span>
+            </p>
+
+            <div class="cards-wrapper">
+                <p class="step-indicator">Pick a date</p>
+                <p class="cards-label">(I actually have one already. shhh)</p>
+
+                <div class="date-card disabled">
+                    <div class="date-label">June 19 — ur birthday</div>
+                    <div class="date-note">u might be busy with ur family and friends that day or lets say u have ganap already.</div>
+                </div>
+
+                <div class="date-card" data-type="date" onclick="selectCard(this, 'date', 'june20')">
+                    <div class="tag tag-perfect">perfect pick</div>
+                    <div class="date-label">June 20 — the day after</div>
+                    <div class="date-note">the ideal day honestly, its saturday</div>
+                </div>
+
+                <div class="date-card" data-type="date" onclick="selectCard(this, 'date', 'june21')">
+                    <div class="tag tag-far">still okay, pero...</div>
+                    <div class="date-label">June 21 — two days after</div>
+                    <div class="date-note">its getting a little far from ur bday. well it still works, but June 20 is right there, bruh.</div>
+                </div>
+            </div>
+
+            <button class="yes-btn" onclick="goToTimePage()" style="margin-top: 20px;">next</button>
+        </div>
+
+        <!-- PAGE 3: time picker -->
+        <div id="page-3" class="page">
+            <p class="message" style="margin-bottom: 10px;">
+                <span class="highlight">almost done!</span>
+            </p>
+
+            <div class="cards-wrapper">
+                <p class="step-indicator">Pick a time</p>
+                <p class="cards-label">what time works for u?</p>
+
+                <div class="date-card" data-type="time" onclick="selectCard(this, 'time', '3pm')">
+                    <div class="tag tag-okay">mainit pero okay</div>
+                    <div class="date-label">2:00 PM</div>
+                    <div class="date-note">i believe mainit that time pero okay lang we'll survive haha.</div>
+                </div>
+
+                <div class="date-card" data-type="time" onclick="selectCard(this, 'time', '4pm')">
+                    <div class="tag tag-perfect">sweet spot</div>
+                    <div class="date-label">3:00 PM</div>
+                    <div class="date-note">mainit pa rin pero okay lang para hindi matraffic</div>
+                </div>
+
+                <div class="date-card" data-type="time" onclick="selectCard(this, 'time', '5pm')">
+                    <div class="tag tag-rush">baka rush hour</div>
+                    <div class="date-label">4:00 PM</div>
+                    <div class="date-note">traffic could be wild pero pwede pa rin.</div>
+                </div>
+
+                <div class="date-card" data-type="time" onclick="selectCard(this, 'time', '6pm')">
+                    <div class="tag tag-far">medyo late na</div>
+                    <div class="date-label">5:00 PM</div>
+                    <div class="date-note">baka wala na tayo masyadong activities magawa but still okay for dinner though</div>
+                </div>
+            </div>
+
+            <button class="yes-btn" onclick="goToPlacePage()" style="margin-top: 20px;">next</button>
+        </div>
+
+        <!-- PAGE 4: place picker -->
+        <div id="page-4" class="page">
+            <p class="message" style="margin-bottom: 10px;">
+                <span class="highlight">last one, promise!</span>
+            </p>
+
+            <div class="cards-wrapper">
+                <p class="step-indicator">pick a place</p>
+                <p class="cards-label">(i actually have one na rin hahaha) </p>
+
+                <div class="date-card" data-type="place" onclick="selectCard(this, 'place', 'moa')">
+                    <div class="tag tag-perfect">perfect pick</div>
+                    <div class="date-label">SM Mall of Asia</div>
+                    <div class="date-note">maraming activities, mall, bayside, and i believe the best choice</div>
+                </div>
+
+                <div class="date-card" data-type="place" onclick="selectCard(this, 'place', 'north')">
+                    <div class="tag tag-okay">okay rin</div>
+                    <div class="date-label">SM North EDSA</div>
+                    <div class="date-note">okay naman, maraming options din</div>
+                </div>
+
+                <div class="date-card" data-type="place" onclick="selectCard(this, 'place', 'upd')">
+                    <div class="tag tag-far">chill vibes</div>
+                    <div class="date-label">UP Diliman, Sunken Garden</div>
+                    <div class="date-note">we can walk around, super relaxed, cute naman</div>
+                </div>
+            </div>
+
+            <button class="yes-btn" onclick="handleFinish()" style="margin-top: 20px;">oke na</button>
+        </div>
+
+    </div>
+
+    <!-- Summary card overlay -->
+    <div class="summary-overlay" id="summaryOverlay">
+        <div class="summary-card">
+            <p class="sub">send it to me para confirmed na haha</p>
+
+            <div class="summary-row">
+                <div class="icon">👥</div>
+                <div>
+                    <div class="info-label">who</div>
+                    <div class="info-value">you and me</div>
+                </div>
+            </div>
+
+            <div class="summary-row">
+                <div class="icon">🎉</div>
+                <div>
+                    <div class="info-label">what</div>
+                    <div class="info-value">birthday date</div>
+                </div>
+            </div>
+
+            <div class="summary-row">
+                <div class="icon">📅</div>
+                <div>
+                    <div class="info-label">when</div>
+                    <div class="info-value" id="s-date">—</div>
+                </div>
+            </div>
+
+            <div class="summary-row">
+                <div class="icon">🕐</div>
+                <div>
+                    <div class="info-label">at</div>
+                    <div class="info-value" id="s-time">—</div>
+                </div>
+            </div>
+
+            <div class="summary-row">
+                <div class="icon">📍</div>
+                <div>
+                    <div class="info-label">where</div>
+                    <div class="info-value" id="s-place">—</div>
+                </div>
+            </div>
+
+            <div class="summary-row">
+                <div class="icon">💬</div>
+                <div>
+                    <div class="info-label">how</div>
+                    <div class="info-value">we'll take the bus</div>
+                </div>
+            </div>
+
+            <p class="summary-note">
+                ss mo to sa 20 katao kung ayaw mong... djk ss mo lang!<br><br>
+                ps. if u are not really available just let me know, we can adjust naman
+            </p>
+
+            <button class="yes-btn" onclick="document.getElementById('summaryOverlay').classList.remove('show')">
+                perfect
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let noButtonClickCount = 0;
+        let selectedDate = null;
+        let selectedTime = null;
+        let selectedPlace = null;
+
+        // Animated name on load
+        const name = "Hi, Lianne";
+        const nameEl = document.getElementById('nameAnimate');
+        name.split('').forEach((char, i) => {
+            const span = document.createElement('span');
+            if (char === ' ') {
+                span.classList.add('space');
+                span.innerHTML = '&nbsp;';
+            } else {
+                span.textContent = char;
+            }
+            span.style.animationDelay = (i * 0.06) + 's';
+            nameEl.appendChild(span);
+        });
+
+        function createConfetti() {
+            for (let i = 0; i < 60; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.backgroundColor = ['#ff6b6b', '#ee5a6f', '#c44569', '#ff1744', '#ffb347', '#ffd700'][Math.floor(Math.random() * 6)];
+                confetti.style.width = (8 + Math.random() * 6) + 'px';
+                confetti.style.height = (8 + Math.random() * 6) + 'px';
+                confetti.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+                confetti.style.animationDelay = Math.random() * 0.3 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 4000);
+            }
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+            document.getElementById(id).classList.add('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleYes() {
+            createConfetti();
+            showPage('page-2');
+        }
+
+        function selectCard(el, type, id) {
+            if (el.classList.contains('disabled')) return;
+            document.querySelectorAll(`.date-card[data-type="${type}"]`).forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            if (type === 'date') selectedDate = id;
+            if (type === 'time') selectedTime = id;
+            if (type === 'place') selectedPlace = id;
+        }
+
+        function goToTimePage() {
+            if (!selectedDate) {
+                showInlineAlert('uy, pick a date first');
+                return;
+            }
+            showPage('page-3');
+        }
+
+        function goToPlacePage() {
+            if (!selectedTime) {
+                showInlineAlert('uy, pick a time first');
+                return;
+            }
+            showPage('page-4');
+        }
+
+        function handleFinish() {
+            if (!selectedPlace) {
+                showInlineAlert('uy, pick a place first');
+                return;
+            }
+
+            const dateNames = { june20: 'June 20, Saturday', june21: 'June 21, Sunday' };
+            const timeNames = { '3pm': '2:00 PM', '4pm': '3:00 PM', '5pm': '4:00 PM', '6pm': '5:00 PM' };
+            const placeNames = { moa: 'SM Mall of Asia', north: 'SM North EDSA', upd: 'UP Diliman, Sunken Garden' };
+
+            document.getElementById('s-date').textContent = dateNames[selectedDate];
+            document.getElementById('s-time').textContent = timeNames[selectedTime];
+            document.getElementById('s-place').textContent = placeNames[selectedPlace];
+
+            createConfetti();
+            document.getElementById('summaryOverlay').classList.add('show');
+        }
+
+        function showInlineAlert(msg) {
+            const existing = document.getElementById('inline-alert');
+            if (existing) existing.remove();
+            const div = document.createElement('div');
+            div.id = 'inline-alert';
+            div.style.cssText = `
+                position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+                background: #333; color: white; padding: 12px 24px;
+                border-radius: 50px; font-size: 14px; font-weight: 600;
+                z-index: 9999; animation: slideUp 0.3s ease;
+                white-space: nowrap;
+            `;
+            div.textContent = msg;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 2500);
+        }
+
+        function moveNoButton(event) {
+            event.preventDefault();
+            const button = document.getElementById('noBtn');
+            noButtonClickCount++;
+
+            if (noButtonClickCount < 7) {
+                const moveDistance = 200 + (noButtonClickCount * 80);
+                const randomX = (Math.random() - 0.5) * moveDistance;
+                const randomY = (Math.random() - 0.5) * moveDistance;
+                const shrinkFactor = Math.max(0.3, 1 - (noButtonClickCount * 0.12));
+                const rotation = noButtonClickCount * 45;
+
+                button.style.position = 'fixed';
+                button.style.transform = `translate(${randomX}px, ${randomY}px) scale(${shrinkFactor}) rotate(${rotation}deg)`;
+                button.style.zIndex = '1000';
+
+                const messages = [
+                    "try again, bruh",
+                    "mbmb",
+                    "yes na kasi",
+                    "tanggalin ko tong \"nah\"",
+                    "r u tired bruh",
+                    "come on",
+                    "i might say the n word na, jk"
+                ];
+                showInlineAlert(messages[noButtonClickCount - 1]);
+            } else {
+                button.style.opacity = '0';
+                button.style.pointerEvents = 'none';
+                showInlineAlert("okay sige, YES na yan. wala ka nang choice");
+                setTimeout(() => {
+                    createConfetti();
+                    showPage('page-2');
+                }, 1500);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const noBtn = document.getElementById('noBtn');
+            if (noBtn) {
+                noBtn.addEventListener('mouseenter', function () {
+                    if (noButtonClickCount > 0) {
+                        const randomX = (Math.random() - 0.5) * 100;
+                        const randomY = (Math.random() - 0.5) * 100;
+                        noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                    }
+                });
+                noBtn.addEventListener('touchstart', function (e) {
+                    e.preventDefault();
+                    moveNoButton(e);
+                }, { passive: false });
+            }
+        });
+    </script>
+</body>
+</html>
